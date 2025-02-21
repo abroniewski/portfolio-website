@@ -23,15 +23,34 @@ const GraphView = ({ data = { nodes: [], links: [] }, width = 800, height = 600 
       })
       .on('end', (event, d) => {
         if (!event.active) simulation.alphaTarget(0);
-        d.fx = null;
-        d.fy = null;
+        d.fx = event.x;
+        d.fy = event.y;
+        setTimeout(() => {
+          d.fx = null;
+          d.fy = null;
+        }, 1000);
       });
 
     // Create force simulation
     const simulation = d3.forceSimulation(data.nodes)
-      .force('link', d3.forceLink(data.links).id(d => d.id))
-      .force('charge', d3.forceManyBody().strength(-100))
-      .force('center', d3.forceCenter(width / 2, height / 2));
+      .force('link', d3.forceLink(data.links)
+        .id(d => d.id)
+        .distance(50)
+        .strength(0.7)
+      )
+      .force('charge', d3.forceManyBody()
+        .strength(d => -100)
+        .distanceMin(10)
+        .distanceMax(200)
+      )
+      .force('center', d3.forceCenter(width / 2, height / 2)
+        .strength(0.05)
+      )
+      .force('collision', d3.forceCollide()
+        .radius(15)
+        .strength(0.7)
+      )
+      .velocityDecay(0.6);
 
     // Create SVG elements
     const svg = d3.select(svgRef.current);
