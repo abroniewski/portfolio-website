@@ -1,0 +1,9 @@
+.aider*
+
+# Linting and formatting
+.eslintcache
+.prettierignore
+.pytest_cache/
+.mypy_cache/
+.coverage
+coverage/
