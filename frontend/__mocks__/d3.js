@@ -23,6 +23,10 @@ function createSelection(elements) {
       });
       return this;
     },
+    call: function(func) {
+      func(this);
+      return this;
+    },
     selectAll: function(selector) {
       var selectedElements = [];
       var parent = this._parent;
@@ -88,6 +92,24 @@ module.exports = {
     var selection = createSelection(Array.from(document.querySelectorAll(selector)));
     selection._parent = document;
     return selection;
+  },
+  drag: function() {
+    var dragBehavior = function(selection) {
+      selection._elements.forEach(function(el) {
+        // Just mark element as draggable for testing
+        el.setAttribute('draggable', 'true');
+      });
+    };
+    
+    // Allow chaining of event listeners
+    dragBehavior.on = function(event, callback) {
+      // Store callback for verification if needed
+      dragBehavior._handlers = dragBehavior._handlers || {};
+      dragBehavior._handlers[event] = callback;
+      return dragBehavior;
+    };
+    
+    return dragBehavior;
   },
   forceSimulation: jest.fn(() => ({
     force: jest.fn().mockReturnThis(),

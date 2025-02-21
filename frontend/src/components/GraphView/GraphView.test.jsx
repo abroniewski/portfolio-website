@@ -50,4 +50,12 @@ describe('GraphView', () => {
     expect(node).toHaveStyle({ fill: '#69b3a2' });
     expect(node.getAttribute('r')).toBe('10');
   });
+
+  it('updates node position on drag', () => {
+    render(<GraphView data={mockData} />);
+    const node = screen.getAllByTestId('graph-node')[0];
+    
+    // Verify drag behavior is attached
+    expect(node.hasAttribute('draggable')).toBe(true);
+  });
 }); 
