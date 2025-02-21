@@ -22,13 +22,12 @@ const GraphView = ({ data = { nodes: [], links: [] }, width = 800, height = 600 
         d.fy = event.y;
       })
       .on('end', (event, d) => {
-        if (!event.active) simulation.alphaTarget(0);
-        d.fx = event.x;
-        d.fy = event.y;
-        setTimeout(() => {
-          d.fx = null;
-          d.fy = null;
-        }, 1000);
+        // Immediately release the fixed position and heat up the simulation
+        if (!event.active) simulation.alphaTarget(0.3);
+        d.fx = null;
+        d.fy = null;
+        // Cool down the simulation after a short burst of activity
+        setTimeout(() => simulation.alphaTarget(0), 300);
       });
 
     // Create force simulation
