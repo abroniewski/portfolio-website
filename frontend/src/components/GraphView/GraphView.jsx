@@ -45,17 +45,49 @@ const GraphView = ({ data = { nodes: [], links: [] }, width = 800, height = 600 
       .force('center', d3.forceCenter(width / 2, height / 2)
         .strength(0.05)
       )
+      // Prevent node overlaps with larger radius to account for labels
       .force('collision', d3.forceCollide()
-        .radius(15)
-        .strength(0.7)
+        .radius(d => {
+          // Get the length of the title to calculate text width
+          const textLength = d.title.length;
+          // Approximate width of text (assuming 6px per character)
+          const textWidth = textLength * 6;
+          // Use the larger of either text width or node diameter
+          return Math.max(textWidth / 2, 40);
+        })
+        .strength(1) // Maximum strength to ensure separation
+        .iterations(2) // Multiple iterations for better accuracy
+      )
+      // Add vertical separation force to prevent label overlap
+      .force('y', d3.forceY()
+        .strength(0.1) // Weak force to allow some vertical movement
+        .y(d => {
+          // Try to maintain vertical spacing between nodes
+          return height / 2 + (Math.random() - 0.5) * 100;
+        })
       )
       .velocityDecay(0.6);
 
     // Create SVG elements
     const svg = d3.select(svgRef.current);
 
+    // Create separate groups for links and nodes to control rendering order
+    const linksGroup = svg.append('g').attr('class', 'links-group');
+    const nodesGroup = svg.append('g').attr('class', 'nodes-group');
+
+    // Create a group for each node that will contain both circle and text
+    const nodeGroups = nodesGroup
+      .selectAll('.node-group')
+      .data(data.nodes)
+      .enter()
+      .append('g')
+      .attr('class', 'node-group')
+      .call(process.env.NODE_ENV === 'test' ? 
+        d3.drag() : 
+        drag);
+
     // Add links
-    const links = svg
+    const links = linksGroup
       .selectAll('.link')
       .data(data.links)
       .enter()
@@ -85,37 +117,31 @@ const GraphView = ({ data = { nodes: [], links: [] }, width = 800, height = 600 
       });
     };
 
-    // Add nodes
-    const nodes = svg
-      .selectAll('.node')
-      .data(data.nodes)
-      .enter()
+    // Add circles to node groups
+    const nodes = nodeGroups
       .append('circle')
       .attr('class', 'node')
       .attr('data-testid', 'graph-node')
       .attr('r', 10)
       .style('fill', '#69b3a2')
-      .call(process.env.NODE_ENV === 'test' ? 
-        d3.drag() : 
-        drag)
       .on('mouseover', function(event, d) {
         // Skip transitions in test environment
         const element = d3.select(this);
         const connectedLinks = findConnectedLinks(d.id);
         const connectedNodes = findConnectedNodes(d.id);
         
-        // Fade all nodes and links
+        // Darken non-connected nodes
         nodes.transition()
           .duration(400)
-          .style('opacity', 0.2);
+          .style('fill', '#2a4542'); // Darker version of the original color
         links.transition()
           .duration(400)
           .style('opacity', 0.2);
         
-        // Highlight connected elements
+        // Keep connected nodes in original color
         connectedNodes.transition()
           .duration(400)
-          .style('opacity', 1);
+          .style('fill', '#69b3a2');
         connectedLinks.transition()
           .duration(400)
           .style('opacity', 1);
@@ -144,10 +170,10 @@ const GraphView = ({ data = { nodes: [], links: [] }, width = 800, height = 600 
         const element = d3.select(this);
         const connectedLinks = findConnectedLinks(d.id);
         
-        // Restore opacity for all elements
+        // Restore original color for all nodes
         nodes.transition()
           .duration(400)
-          .style('opacity', 1);
+          .style('fill', '#69b3a2');
         links.transition()
           .duration(400)
           .style('opacity', 1);
@@ -172,6 +198,19 @@ const GraphView = ({ data = { nodes: [], links: [] }, width = 800, height = 600 
         }
       });
 
+    // Add labels to node groups
+    const labels = nodeGroups
+      .append('text')
+      .attr('class', 'node-label')
+      .attr('data-testid', 'node-label')
+      .attr('dy', 25)
+      .style('text-anchor', 'middle')
+      .style('font-size', '12px')
+      .style('font-family', 'Arial')
+      .style('fill', '#f5f5f5')
+      .text(d => d.title)
+      .style('pointer-events', 'none');
+
     // Update positions on simulation tick
     simulation.on('tick', () => {
       links
@@ -180,9 +219,8 @@ const GraphView = ({ data = { nodes: [], links: [] }, width = 800, height = 600 
         .attr('x2', d => d.target.x)
         .attr('y2', d => d.target.y);
 
-      nodes
-        .attr('cx', d => d.x)
-        .attr('cy', d => d.y);
+      nodeGroups
+        .attr('transform', d => `translate(${d.x},${d.y})`);
     });
 
     // Cleanup

@@ -24,6 +24,13 @@ describe('GraphView', () => {
     render(<GraphView data={mockData} />);
     const nodes = screen.getAllByTestId('graph-node');
     expect(nodes).toHaveLength(mockData.nodes.length);
+    const labels = screen.getAllByTestId('node-label');
+    expect(labels).toHaveLength(mockData.nodes.length);
+    
+    // Check if labels show correct text
+    labels.forEach((label, i) => {
+      expect(label).toHaveTextContent(mockData.nodes[i].title);
+    });
   });
 
   it('renders the correct number of links', () => {
