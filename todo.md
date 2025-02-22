@@ -8,12 +8,12 @@ Below is a **to-do checklist** in Markdown format. It’s structured around a **
 
 -  **1.1 Set up the Git repository**
     
-    - [ ]  Initialize a new Git repo (`git init`).
-    - [ ]  Create an initial `.gitignore` (Django, Python, Node, etc.).
-    - [ ]  Create a `README.md` with a short project overview.
+    - [X]  Initialize a new Git repo (`git init`).
+    - [X]  Create an initial `.gitignore` (Django, Python, Node, etc.).
+    - [X]  Create a `README.md` with a short project overview.
 -  **1.2 Django Backend Setup**
     
-    - [ ]  Create a Python virtual environment:
+    - [X]  Create a Python virtual environment:
         
         ```bash
         python -m venv venv
@@ -68,14 +68,14 @@ Below is a **to-do checklist** in Markdown format. It’s structured around a **
         
 -  **1.3 Vite + React Frontend Setup**
     
-    - [ ]  In a separate folder (e.g., `frontend`), initialize your React project with Vite:
+    - [X]  In a separate folder (e.g., `frontend`), initialize your React project with Vite:
         
         ```bash
         npm create vite@latest
         ```
         
-    - [ ]  Choose the React + JavaScript (or TypeScript) template.
-    - [ ]  Install dependencies:
+    - [X]  Choose the React + JavaScript (or TypeScript) template.
+    - [X]  Install dependencies:
         
         ```bash
         cd frontend
@@ -83,8 +83,8 @@ Below is a **to-do checklist** in Markdown format. It’s structured around a **
         npm install d3 react-router-dom
         ```
         
-    - [ ]  Set up ESLint + Prettier for the frontend (optional but recommended).
-    - [ ]  Confirm you can run `npm run dev` and see the basic React app.
+    - [X]  Set up ESLint + Prettier for the frontend (optional but recommended).
+    - [X]  Confirm you can run `npm run dev` and see the basic React app.
 
 ---
 
