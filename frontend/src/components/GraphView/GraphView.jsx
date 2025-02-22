@@ -72,6 +72,19 @@ const GraphView = ({ data = { nodes: [], links: [] }, width = 800, height = 600 
       });
     };
 
+    // Helper function to find connected nodes
+    const findConnectedNodes = (nodeId) => {
+      return d3.selectAll('.node').filter(function(d) {
+        // Find all nodes that are connected via links
+        const isConnected = data.links.some(link => 
+          (link.source.id === nodeId && link.target.id === d.id) ||
+          (link.target.id === nodeId && link.source.id === d.id)
+        );
+        // Include the hovered node itself
+        return isConnected || d.id === nodeId;
+      });
+    };
+
     // Add nodes
     const nodes = svg
       .selectAll('.node')
@@ -89,6 +102,23 @@ const GraphView = ({ data = { nodes: [], links: [] }, width = 800, height = 600 
         // Skip transitions in test environment
         const element = d3.select(this);
         const connectedLinks = findConnectedLinks(d.id);
+        const connectedNodes = findConnectedNodes(d.id);
+        
+        // Fade all nodes and links
+        nodes.transition()
+          .duration(400)
+          .style('opacity', 0.2);
+        links.transition()
+          .duration(400)
+          .style('opacity', 0.2);
+        
+        // Highlight connected elements
+        connectedNodes.transition()
+          .duration(400)
+          .style('opacity', 1);
+        connectedLinks.transition()
+          .duration(400)
+          .style('opacity', 1);
         
         if (process.env.NODE_ENV === 'test') {
           element
@@ -113,6 +143,14 @@ const GraphView = ({ data = { nodes: [], links: [] }, width = 800, height = 600 
         // Skip transitions in test environment
         const element = d3.select(this);
         const connectedLinks = findConnectedLinks(d.id);
+        
+        // Restore opacity for all elements
+        nodes.transition()
+          .duration(400)
+          .style('opacity', 1);
+        links.transition()
+          .duration(400)
+          .style('opacity', 1);
         
         if (process.env.NODE_ENV === 'test') {
           element
