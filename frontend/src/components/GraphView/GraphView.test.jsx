@@ -35,20 +35,28 @@ describe('GraphView', () => {
   it('changes node appearance on hover', () => {
     render(<GraphView data={mockData} />);
     const node = screen.getAllByTestId('graph-node')[0];
+    const links = screen.getAllByTestId('graph-link');
+    const connectedLink = links[0]; // First link connects to first node
 
     // Initial state
     expect(node).toHaveStyle({ fill: '#69b3a2' });
     expect(node.getAttribute('r')).toBe('10');
+    expect(connectedLink).toHaveStyle({ stroke: '#999' });
+    expect(connectedLink.style.strokeWidth).toBe('1');
 
     // Hover state
     fireEvent.mouseOver(node);
     expect(node).toHaveStyle({ fill: '#ff7f50' });
     expect(node.getAttribute('r')).toBe('15');
+    expect(connectedLink).toHaveStyle({ stroke: '#ff7f50' });
+    expect(connectedLink.style.strokeWidth).toBe('2');
 
     // Return to initial state
     fireEvent.mouseOut(node);
     expect(node).toHaveStyle({ fill: '#69b3a2' });
     expect(node.getAttribute('r')).toBe('10');
+    expect(connectedLink).toHaveStyle({ stroke: '#999' });
+    expect(connectedLink.style.strokeWidth).toBe('1');
   });
 
   it('updates node position on drag', () => {

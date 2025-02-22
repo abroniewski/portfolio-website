@@ -65,6 +65,13 @@ const GraphView = ({ data = { nodes: [], links: [] }, width = 800, height = 600 
       .style('stroke', '#999')
       .style('stroke-width', 1);
 
+    // Helper function to find connected links for a node
+    const findConnectedLinks = (nodeId) => {
+      return d3.selectAll('.link').filter(function(d) {
+        return d.source.id === nodeId || d.target.id === nodeId;
+      });
+    };
+
     // Add nodes
     const nodes = svg
       .selectAll('.node')
@@ -75,38 +82,55 @@ const GraphView = ({ data = { nodes: [], links: [] }, width = 800, height = 600 
       .attr('data-testid', 'graph-node')
       .attr('r', 10)
       .style('fill', '#69b3a2')
-      // Skip complex drag behavior in test environment
       .call(process.env.NODE_ENV === 'test' ? 
         d3.drag() : 
         drag)
       .on('mouseover', function(event, d) {
         // Skip transitions in test environment
         const element = d3.select(this);
+        const connectedLinks = findConnectedLinks(d.id);
+        
         if (process.env.NODE_ENV === 'test') {
           element
             .style('fill', '#ff7f50')
             .attr('r', 15);
+          connectedLinks.style('stroke', '#ff7f50')
+            .style('stroke-width', 2);
         } else {
           element
             .transition()
             .duration(200)
             .style('fill', '#ff7f50')
             .attr('r', 15);
+          connectedLinks
+            .transition()
+            .duration(200)
+            .style('stroke', '#ff7f50')
+            .style('stroke-width', 2);
         }
       })
       .on('mouseout', function(event, d) {
         // Skip transitions in test environment
         const element = d3.select(this);
+        const connectedLinks = findConnectedLinks(d.id);
+        
         if (process.env.NODE_ENV === 'test') {
           element
             .style('fill', '#69b3a2')
             .attr('r', 10);
+          connectedLinks.style('stroke', '#999')
+            .style('stroke-width', 1);
         } else {
           element
             .transition()
             .duration(200)
             .style('fill', '#69b3a2')
             .attr('r', 10);
+          connectedLinks
+            .transition()
+            .duration(200)
+            .style('stroke', '#999')
+            .style('stroke-width', 1);
         }
       });
 
