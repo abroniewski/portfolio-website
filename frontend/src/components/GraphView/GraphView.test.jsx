@@ -1,5 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import GraphView from './GraphView';
+import { select } from 'd3-selection';
+import { act } from 'react-dom/test-utils';
 
 describe('GraphView', () => {
   const mockData = {
@@ -72,5 +74,128 @@ describe('GraphView', () => {
     
     // Verify drag behavior is attached
     expect(node.hasAttribute('draggable')).toBe(true);
+  });
+});
+
+describe('GraphView zoom behavior', () => {
+  const mockNodes = [
+    { id: 1, title: 'Node 1', x: 100, y: 100 },
+    { id: 2, title: 'Node 2', x: 200, y: 200 }
+  ];
+  const mockEdges = [
+    { source: mockNodes[0], target: mockNodes[1] }
+  ];
+
+  it('hides text when zoomed out far', () => {
+    const { container } = render(
+      <GraphView nodes={mockNodes} edges={mockEdges} />
+    );
+
+    // Simulate a far zoom
+    act(() => {
+      const svg = select(container.querySelector('svg'));
+      svg.dispatch('zoom', { 
+        detail: { transform: { k: 0.3, x: 0, y: 0 } }
+      });
+    });
+
+    const texts = container.querySelectorAll('text');
+    texts.forEach(text => {
+      expect(text).toHaveStyle({ opacity: '0' });
+    });
+  });
+
+  it('shows text when zoomed in close', () => {
+    const { container } = render(
+      <GraphView nodes={mockNodes} edges={mockEdges} />
+    );
+
+    // Simulate a close zoom
+    act(() => {
+      const svg = select(container.querySelector('svg'));
+      svg.dispatch('zoom', {
+        detail: { transform: { k: 2, x: 0, y: 0 } }
+      });
+    });
+
+    const texts = container.querySelectorAll('text');
+    texts.forEach(text => {
+      expect(text).toHaveStyle({ opacity: '1' });
+    });
+  });
+});
+
+describe('GraphView zoom-dependent behavior', () => {
+  const mockData = {
+    nodes: [
+      { id: '1', title: 'Node 1' },
+      { id: '2', title: 'Node 2' },
+    ],
+    links: [
+      { source: '1', target: '2' },
+    ],
+  };
+
+  it('scales node sizes with zoom level', () => {
+    const { container } = render(<GraphView data={mockData} />);
+    
+    // Get initial node size
+    const initialNode = container.querySelector('.node');
+    const initialRadius = initialNode.getAttribute('r');
+
+    // Simulate zoom in
+    act(() => {
+      const svg = select(container.querySelector('svg'));
+      svg.dispatch('zoom', {
+        detail: { transform: { k: 2, x: 0, y: 0 } }
+      });
+    });
+
+    // Check that node size increased
+    const zoomedNode = container.querySelector('.node');
+    const zoomedRadius = zoomedNode.getAttribute('r');
+    expect(parseFloat(zoomedRadius)).toBeGreaterThan(parseFloat(initialRadius));
+  });
+
+  it('scales link distances with zoom level', () => {
+    const { container } = render(<GraphView data={mockData} />);
+    
+    // Get initial link distance from force simulation
+    const initialLink = container.querySelector('.link');
+    const initialStrokeWidth = initialLink.style.strokeWidth;
+
+    // Simulate zoom in
+    act(() => {
+      const svg = select(container.querySelector('svg'));
+      svg.dispatch('zoom', {
+        detail: { transform: { k: 2, x: 0, y: 0 } }
+      });
+    });
+
+    // Check that stroke width increased
+    const zoomedLink = container.querySelector('.link');
+    const zoomedStrokeWidth = zoomedLink.style.strokeWidth;
+    expect(parseFloat(zoomedStrokeWidth)).toBeGreaterThan(parseFloat(initialStrokeWidth));
+  });
+
+  it('scales font size with zoom level', () => {
+    const { container } = render(<GraphView data={mockData} />);
+    
+    // Get initial font size
+    const initialLabel = container.querySelector('.node-label');
+    const initialFontSize = initialLabel.style.fontSize;
+
+    // Simulate zoom in
+    act(() => {
+      const svg = select(container.querySelector('svg'));
+      svg.dispatch('zoom', {
+        detail: { transform: { k: 2, x: 0, y: 0 } }
+      });
+    });
+
+    // Check that font size increased
+    const zoomedLabel = container.querySelector('.node-label');
+    const zoomedFontSize = zoomedLabel.style.fontSize;
+    expect(parseFloat(zoomedFontSize)).toBeGreaterThan(parseFloat(initialFontSize));
   });
 }); 
