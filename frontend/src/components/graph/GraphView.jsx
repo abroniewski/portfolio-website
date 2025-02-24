@@ -2,6 +2,7 @@ import * as d3 from 'd3';
 import { useEffect, useRef, useState, useCallback } from 'react';
 
 import { DIMENSIONS, ZOOM_THRESHOLDS, COLORS } from '../../constants/graph';
+import ContentPanel from '../content/ContentPanel';
 import useDragBehavior from '../../hooks/useDragBehavior';
 import useForceSimulation from '../../hooks/useForceSimulation';
 import useGraphLayout from '../../hooks/useGraphLayout';
@@ -14,11 +15,12 @@ const GraphView = ({ data = { nodes: [], links: [] } }) => {
   const svgRef = useRef(null);
   const selectionsRef = useRef({ nodes: null, links: null, labels: null });
   const [transform, setTransform] = useState({ k: 1, x: 0, y: 0 });
+  const [selectedNode, setSelectedNode] = useState(null);
 
   const zoomValues = useZoomDependentValues(transform.k);
 
   const simulationRef = useForceSimulation(data, DIMENSIONS.width, DIMENSIONS.height, zoomValues);
-  const initDrag = useDragBehavior(simulationRef);
+  const dragBehavior = useDragBehavior(simulationRef);
   const { createLinks, createNodes, createContainer, updatePositions } = useGraphLayout(
     DIMENSIONS.width,
     DIMENSIONS.height,
@@ -49,6 +51,14 @@ const GraphView = ({ data = { nodes: [], links: [] } }) => {
 
   const initZoom = useZoomBehavior(ZOOM_THRESHOLDS, handleZoomChange);
 
+  const handleNodeClick = useCallback(node => {
+    setSelectedNode(node);
+  }, []);
+
+  const handleClosePanel = useCallback(() => {
+    setSelectedNode(null);
+  }, []);
+
   // Main effect for creating and updating the graph
   useEffect(() => {
     if (!data || !svgRef.current || !simulationRef.current) return;
@@ -67,7 +77,12 @@ const GraphView = ({ data = { nodes: [], links: [] } }) => {
 
     // Create links and nodes
     const links = createLinks(linksGroup, data);
-    const { nodeGroups, nodes, labels } = createNodes(nodesGroup, data, initDrag);
+    const { nodeGroups, nodes, labels } = createNodes(
+      nodesGroup,
+      data,
+      dragBehavior(),
+      handleNodeClick
+    );
 
     // Update selections ref
     selectionsRef.current = { nodes, links, labels };
@@ -85,7 +100,7 @@ const GraphView = ({ data = { nodes: [], links: [] } }) => {
     };
   }, [
     data,
-    initDrag,
+    dragBehavior,
     createContainer,
     createLinks,
     createNodes,
@@ -94,6 +109,7 @@ const GraphView = ({ data = { nodes: [], links: [] } }) => {
     handleNodeMouseOut,
     initZoom,
     simulationRef,
+    handleNodeClick,
   ]);
 
   return (
@@ -120,6 +136,7 @@ const GraphView = ({ data = { nodes: [], links: [] } }) => {
           boxShadow: '0 0 10px rgba(255, 255, 255, 0.1)',
         }}
       />
+      <ContentPanel nodeId={selectedNode?.id} onClose={handleClosePanel} />
     </div>
   );
 };

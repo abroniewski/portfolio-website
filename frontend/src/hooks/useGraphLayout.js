@@ -19,21 +19,26 @@ const useGraphLayout = (width, height, transform, zoomValues) => {
   );
 
   const createNodes = useCallback(
-    (container, data, initDrag) => {
+    (container, data, dragBehavior, handleNodeClick) => {
       const nodeGroups = container
         .selectAll('.node-group')
         .data(data.nodes)
         .enter()
         .append('g')
         .attr('class', 'node-group')
-        .call(initDrag());
+        .call(dragBehavior);
 
       const nodes = nodeGroups
         .append('circle')
         .attr('class', 'node')
         .attr('data-testid', 'graph-node')
         .attr('r', zoomValues.nodeRadius)
-        .style('fill', COLORS.node.default);
+        .style('fill', COLORS.node.default)
+        .style('cursor', 'pointer')
+        .on('click', (event, d) => {
+          event.stopPropagation();
+          if (handleNodeClick) handleNodeClick(d);
+        });
 
       const labels = nodeGroups
         .append('text')

@@ -1,36 +1,38 @@
 import * as d3 from 'd3';
 import { useCallback } from 'react';
 
-const useDragBehavior = simulation => {
+const useDragBehavior = simulationRef => {
   return useCallback(
-    () =>
-      d3
-        .drag()
-        .filter(event => {
-          // Allow drag only on nodes, not during zoom/pan
-          return !event.button && !event.ctrlKey && !event.defaultPrevented;
-        })
-        .on('start', (event, d) => {
-          // Stop any ongoing zoom behavior
-          event.sourceEvent.stopPropagation();
+    (handleClick = null) => {
+      const dragstarted = (event, d) => {
+        if (!event.active) simulationRef.current.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+      };
 
-          if (!event.active) simulation.current.alphaTarget(0.3).restart();
-          d.fx = d.x;
-          d.fy = d.y;
-        })
-        .on('drag', (event, d) => {
-          event.sourceEvent.stopPropagation();
-          d.fx = event.x;
-          d.fy = event.y;
-        })
-        .on('end', (event, d) => {
-          event.sourceEvent.stopPropagation();
-          if (!event.active) simulation.current.alphaTarget(0);
-          // Release the node after dragging
-          d.fx = null;
-          d.fy = null;
-        }),
-    [simulation]
+      const dragged = (event, d) => {
+        d.fx = event.x;
+        d.fy = event.y;
+      };
+
+      const dragended = (event, d) => {
+        if (!event.active) simulationRef.current.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+      };
+
+      const drag = d3
+        .drag()
+        .on('start', dragstarted)
+        .on('drag', dragged)
+        .on('end', dragended);
+
+      // Add the click handler to the returned drag behavior
+      drag.handleClick = handleClick;
+
+      return drag;
+    },
+    [simulationRef]
   );
 };
 
