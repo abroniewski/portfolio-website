@@ -1,6 +1,10 @@
 import * as d3 from 'd3';
 import { useEffect, useRef } from 'react';
 
+// TODO: Consider refactoring force configuration to be more testable
+// Current implementation is difficult to test due to D3's chaining API
+// Related: force link mock issues in useForceSimulation.test.js
+
 const useForceSimulation = (data, width, height, zoomValues) => {
   const simulationRef = useRef(null);
 

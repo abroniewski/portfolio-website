@@ -1,4 +1,5 @@
-import { render } from '@testing-library/react';
+import { DIMENSIONS } from '../../constants/graph';
+import { renderWithD3, sampleGraphData } from '../../utils/test-utils';
 
 import GraphView from './GraphView';
 
@@ -6,15 +7,20 @@ import GraphView from './GraphView';
 // TODO: Implement proper D3 mocking strategy and re-enable tests
 describe.skip('GraphView', () => {
   it('renders without crashing', () => {
-    const { container } = render(<GraphView />);
+    const { container } = renderWithD3(<GraphView />);
     expect(container).toBeInTheDocument();
   });
 
-  // Add more specific tests here
   it('renders with correct dimensions', () => {
-    const { getByTestId } = render(<GraphView />);
+    const { getByTestId } = renderWithD3(<GraphView />);
     const svg = getByTestId('graph-container');
-    expect(svg).toHaveAttribute('width', '700');
-    expect(svg).toHaveAttribute('height', '500');
+
+    expect(svg).toHaveAttribute('width', String(DIMENSIONS.width));
+    expect(svg).toHaveAttribute('height', String(DIMENSIONS.height));
+  });
+
+  it('renders with provided data', () => {
+    const { container } = renderWithD3(<GraphView data={sampleGraphData} />);
+    expect(container).toBeInTheDocument();
   });
 });
