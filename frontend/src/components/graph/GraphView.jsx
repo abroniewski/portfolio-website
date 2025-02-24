@@ -2,13 +2,13 @@ import * as d3 from 'd3';
 import { useEffect, useRef, useState, useCallback } from 'react';
 
 import { DIMENSIONS, ZOOM_THRESHOLDS, COLORS } from '../../constants/graph';
-import ContentPanel from '../content/ContentPanel';
 import useDragBehavior from '../../hooks/useDragBehavior';
 import useForceSimulation from '../../hooks/useForceSimulation';
 import useGraphLayout from '../../hooks/useGraphLayout';
 import useHighlightBehavior from '../../hooks/useHighlightBehavior';
 import useZoomBehavior from '../../hooks/useZoomBehavior';
 import useZoomDependentValues from '../../hooks/useZoomDependentValues';
+import ContentPanel from '../content/ContentPanel';
 
 const GraphView = ({ data = { nodes: [], links: [] } }) => {
   const containerRef = useRef(null);

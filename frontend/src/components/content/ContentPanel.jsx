@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { mockContentData } from '../../constants/mockData';
+
 import styles from './ContentPanel.module.css';
 
 const ContentPanel = ({ nodeId, onClose }) => {
@@ -32,4 +33,4 @@ const ContentPanel = ({ nodeId, onClose }) => {
   );
 };
 
-export default ContentPanel; 
+export default ContentPanel;

@@ -21,11 +21,7 @@ const useDragBehavior = simulationRef => {
         d.fy = null;
       };
 
-      const drag = d3
-        .drag()
-        .on('start', dragstarted)
-        .on('drag', dragged)
-        .on('end', dragended);
+      const drag = d3.drag().on('start', dragstarted).on('drag', dragged).on('end', dragended);
 
       // Add the click handler to the returned drag behavior
       drag.handleClick = handleClick;
