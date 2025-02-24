@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import { useCallback } from 'react';
+
 import { COLORS } from '../constants/graph';
 import { findConnectedLinks, findConnectedNodes } from '../utils';
 
@@ -20,7 +21,10 @@ const useHighlightBehavior = (nodes, links, labels, zoomValues) => {
       connectedNodes.style('fill', COLORS.node.default).style('opacity', 1);
 
       // Highlight connected links
-      connectedLinks.style('stroke', COLORS.link.highlight).style('stroke-width', 2).style('opacity', 1);
+      connectedLinks
+        .style('stroke', COLORS.link.highlight)
+        .style('stroke-width', 2)
+        .style('opacity', 1);
 
       // Highlight hovered node
       d3.select(this)

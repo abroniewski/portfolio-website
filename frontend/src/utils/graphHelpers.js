@@ -28,4 +28,4 @@ export const calculateBoundedPosition = (value, min, max) => {
 
 export const calculateNodePosition = (value, width, padding) => {
   return calculateBoundedPosition(value, padding, width - padding);
-}; 
+};

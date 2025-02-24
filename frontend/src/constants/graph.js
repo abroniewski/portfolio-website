@@ -21,4 +21,4 @@ export const COLORS = {
     highlight: '#ff7f50',
   },
   text: '#f5f5f5',
-}; 
+};

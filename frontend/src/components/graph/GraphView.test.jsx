@@ -2,6 +2,8 @@ import { render } from '@testing-library/react';
 
 import GraphView from './GraphView';
 
+// Tests are temporarily skipped until we set up proper D3 mocking
+// TODO: Implement proper D3 mocking strategy and re-enable tests
 describe.skip('GraphView', () => {
   it('renders without crashing', () => {
     const { container } = render(<GraphView />);

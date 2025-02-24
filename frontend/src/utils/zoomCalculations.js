@@ -16,4 +16,4 @@ export const calculateChargeStrength = (zoomLevel, baseStrength = -30) => {
 
 export const calculateCollisionRadius = (zoomLevel, minRadius = 40, baseRadius = 60) => {
   return Math.max(minRadius, baseRadius * zoomLevel);
-}; 
+};
