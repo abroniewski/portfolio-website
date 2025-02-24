@@ -5,8 +5,8 @@ export const ZOOM_THRESHOLDS = {
 };
 
 export const DIMENSIONS = {
-  width: 700,
-  height: 500,
+  width: window.innerWidth - 40, // Almost full window width
+  height: (window.innerHeight / 2) - 40, // Half window height minus padding
 };
 
 export const COLORS = {

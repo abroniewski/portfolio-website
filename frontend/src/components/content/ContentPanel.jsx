@@ -1,26 +1,33 @@
 import { useEffect, useState } from 'react';
 
+import { useNodeContext } from '../../contexts/NodeContext';
 import { mockContentData } from '../../constants/mockData';
-
 import styles from './ContentPanel.module.css';
 
-const ContentPanel = ({ nodeId, onClose }) => {
+const ContentPanel = () => {
+  const { selectedNode, handleNodeDeselect } = useNodeContext();
   const [content, setContent] = useState(null);
 
   useEffect(() => {
-    if (nodeId) {
-      const nodeContent = mockContentData[nodeId];
+    if (selectedNode) {
+      const nodeContent = mockContentData[selectedNode.id];
       if (nodeContent) {
         setContent(nodeContent);
       }
+    } else {
+      setContent(null);
     }
-  }, [nodeId]);
+  }, [selectedNode]);
 
-  if (!nodeId || !content) return null;
+  if (!selectedNode || !content) return null;
 
   return (
     <div className={styles.panel}>
-      <button className={styles.closeButton} onClick={onClose}>
+      <button 
+        className={styles.closeButton} 
+        onClick={handleNodeDeselect}
+        aria-label="Close content panel"
+      >
         ×
       </button>
       <div className={styles.content}>

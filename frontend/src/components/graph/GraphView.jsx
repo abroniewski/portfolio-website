@@ -9,13 +9,14 @@ import useHighlightBehavior from '../../hooks/useHighlightBehavior';
 import useZoomBehavior from '../../hooks/useZoomBehavior';
 import useZoomDependentValues from '../../hooks/useZoomDependentValues';
 import ContentPanel from '../content/ContentPanel';
+import { useNodeContext } from '../../contexts/NodeContext';
 
 const GraphView = ({ data = { nodes: [], links: [] } }) => {
   const containerRef = useRef(null);
   const svgRef = useRef(null);
   const selectionsRef = useRef({ nodes: null, links: null, labels: null });
   const [transform, setTransform] = useState({ k: 1, x: 0, y: 0 });
-  const [selectedNode, setSelectedNode] = useState(null);
+  const { handleNodeSelect, selectedNode } = useNodeContext();
 
   const zoomValues = useZoomDependentValues(transform.k);
 
@@ -52,12 +53,8 @@ const GraphView = ({ data = { nodes: [], links: [] } }) => {
   const initZoom = useZoomBehavior(ZOOM_THRESHOLDS, handleZoomChange);
 
   const handleNodeClick = useCallback(node => {
-    setSelectedNode(node);
-  }, []);
-
-  const handleClosePanel = useCallback(() => {
-    setSelectedNode(null);
-  }, []);
+    handleNodeSelect(node);
+  }, [handleNodeSelect]);
 
   // Main effect for creating and updating the graph
   useEffect(() => {
@@ -113,30 +110,43 @@ const GraphView = ({ data = { nodes: [], links: [] } }) => {
   ]);
 
   return (
-    <div
-      ref={containerRef}
-      style={{
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
+    <div 
+      className="graph-container" 
+      style={{ 
+        width: selectedNode ? '90%' : '95%',
+        maxWidth: selectedNode ? '1400px' : '100%',
+        height: selectedNode ? '50vh' : '85vh',
+        border: '2px solid #ff69b4',
+        borderRadius: '8px',
+        backgroundColor: COLORS.background,
         overflow: 'hidden',
+        display: 'flex',
+        transition: 'all 0.3s ease-out',
+        margin: '0 auto',
       }}
     >
-      <svg
-        ref={svgRef}
-        width={DIMENSIONS.width}
-        height={DIMENSIONS.height}
-        data-testid="graph-container"
+      <div
+        ref={containerRef}
         style={{
-          background: COLORS.background,
-          border: '2px solid white',
-          borderRadius: '8px',
-          boxShadow: '0 0 10px rgba(255, 255, 255, 0.1)',
+          flex: 1,
+          height: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: selectedNode ? '0' : '0 2rem',
         }}
-      />
-      <ContentPanel nodeId={selectedNode?.id} onClose={handleClosePanel} />
+      >
+        <svg
+          ref={svgRef}
+          width="100%"
+          height="100%"
+          data-testid="graph-container"
+          style={{
+            maxHeight: '100%',
+            maxWidth: '100%',
+          }}
+        />
+      </div>
     </div>
   );
 };
