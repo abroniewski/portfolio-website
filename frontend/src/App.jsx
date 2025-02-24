@@ -1,5 +1,4 @@
-import React from 'react'
-import GraphView from './components/GraphView/GraphView'
+import GraphView from './components/GraphView/GraphView';
 
 const mockData = {
   nodes: [
@@ -32,7 +31,7 @@ function App() {
       <h1>Interactive Portfolio</h1>
       <GraphView data={mockData} width={800} height={600} />
     </main>
-  )
+  );
 }
 
-export default App
+export default App;
