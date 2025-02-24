@@ -113,15 +113,14 @@ const GraphView = ({ data = { nodes: [], links: [] } }) => {
     <div 
       className="graph-container" 
       style={{ 
-        width: selectedNode ? '90%' : '95%',
-        maxWidth: selectedNode ? '1400px' : '100%',
-        height: selectedNode ? '50vh' : '85vh',
+        width: '90%',
+        maxWidth: '1400px',
+        height: '35vh',
         border: '2px solid #ff69b4',
         borderRadius: '8px',
         backgroundColor: COLORS.background,
         overflow: 'hidden',
         display: 'flex',
-        transition: 'all 0.3s ease-out',
         margin: '0 auto',
       }}
     >
@@ -133,7 +132,7 @@ const GraphView = ({ data = { nodes: [], links: [] } }) => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          padding: selectedNode ? '0' : '0 2rem',
+          padding: '0 2rem',
         }}
       >
         <svg

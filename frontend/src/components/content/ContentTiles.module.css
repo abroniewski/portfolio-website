@@ -1,0 +1,43 @@
+.tilesContainer {
+  width: 100%;
+  max-width: 1400px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.5rem;
+  padding: 2rem;
+  margin: 0 auto;
+}
+
+.tile {
+  background: rgba(30, 30, 30, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tile:hover {
+  transform: translateY(-2px);
+  border-color: #ff69b4;
+}
+
+.tileTitle {
+  font-size: 1rem;
+  margin: 0 0 0.5rem 0;
+  color: #fff;
+}
+
+.tileType {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: #646cff;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  color: #fff;
+}
+
+.selected {
+  border-color: #ff69b4;
+  background: rgba(255, 105, 180, 0.1);
+} 

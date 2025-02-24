@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { NodeProvider } from '../../contexts/NodeContext';
 import GraphView from '../graph/GraphView';
 import ContentPanel from '../content/ContentPanel';
+import ContentTiles from '../content/ContentTiles';
 import { mockGraphData } from '../../constants/mockData';
 import styles from './MainLayout.module.css';
 
@@ -14,6 +15,7 @@ const MainLayout = () => {
           <h1 className={styles.title}>Interactive Portfolio</h1>
           <div className={styles.content}>
             <GraphView data={mockGraphData} />
+            <ContentTiles />
             <ContentPanel />
           </div>
         </div>
