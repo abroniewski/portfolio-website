@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { COLORS } from '../constants/graph';
 
 const useGraphLayout = (width, height, transform, zoomValues) => {
   const createLinks = useCallback(
@@ -10,7 +11,7 @@ const useGraphLayout = (width, height, transform, zoomValues) => {
         .append('line')
         .attr('class', 'link')
         .attr('data-testid', 'graph-link')
-        .style('stroke', '#999')
+        .style('stroke', COLORS.link.default)
         .style('stroke-width', transform.k * 0.5);
     },
     [transform.k]
@@ -31,7 +32,7 @@ const useGraphLayout = (width, height, transform, zoomValues) => {
         .attr('class', 'node')
         .attr('data-testid', 'graph-node')
         .attr('r', zoomValues.nodeRadius)
-        .style('fill', '#69b3a2');
+        .style('fill', COLORS.node.default);
 
       const labels = nodeGroups
         .append('text')
@@ -40,7 +41,7 @@ const useGraphLayout = (width, height, transform, zoomValues) => {
         .attr('dy', zoomValues.nodeRadius + 10)
         .style('text-anchor', 'middle')
         .style('font-size', `${Math.max(8, 12 * transform.k)}px`)
-        .style('fill', '#f5f5f5')
+        .style('fill', COLORS.text)
         .style('pointer-events', 'none')
         .text(d => d.title);
 

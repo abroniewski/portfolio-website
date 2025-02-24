@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
+import { calculateNodeRadius, calculateLinkDistance, calculateFontSize } from '../utils';
 
 const useZoomDependentValues = zoomLevel => {
   return useMemo(
     () => ({
-      nodeRadius: Math.max(5, 10 * zoomLevel),
-      linkDistance: Math.max(50, 80 * zoomLevel),
+      nodeRadius: calculateNodeRadius(zoomLevel),
+      linkDistance: calculateLinkDistance(zoomLevel),
       chargeStrength: -30 * zoomLevel,
       collisionRadius: Math.max(40, 60 * zoomLevel),
     }),

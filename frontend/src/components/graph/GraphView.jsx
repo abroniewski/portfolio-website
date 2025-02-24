@@ -1,23 +1,13 @@
 import * as d3 from 'd3';
 import { useEffect, useRef, useState, useCallback } from 'react';
 
+import { DIMENSIONS, ZOOM_THRESHOLDS, COLORS } from '../../constants/graph';
 import useDragBehavior from '../../hooks/useDragBehavior';
 import useForceSimulation from '../../hooks/useForceSimulation';
 import useGraphLayout from '../../hooks/useGraphLayout';
 import useHighlightBehavior from '../../hooks/useHighlightBehavior';
 import useZoomBehavior from '../../hooks/useZoomBehavior';
 import useZoomDependentValues from '../../hooks/useZoomDependentValues';
-
-const ZOOM_THRESHOLDS = {
-  FAR: 0.5, // Below this: minimal view
-  MID: 1.5, // Above this: detailed view
-  MAX: 4, // Maximum zoom level
-};
-
-const DIMENSIONS = {
-  width: 700,
-  height: 500,
-};
 
 const GraphView = ({ data = { nodes: [], links: [] } }) => {
   const containerRef = useRef(null);
@@ -124,7 +114,7 @@ const GraphView = ({ data = { nodes: [], links: [] } }) => {
         height={DIMENSIONS.height}
         data-testid="graph-container"
         style={{
-          background: '#1a1a1a',
+          background: COLORS.background,
           border: '2px solid white',
           borderRadius: '8px',
           boxShadow: '0 0 10px rgba(255, 255, 255, 0.1)',
